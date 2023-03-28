@@ -67,7 +67,7 @@ export function Calendar() {
       headerStyle={{
         backgroundColor: theme.colors.background_secondary,
         borderBottomWidth: 0.5,
-        borderBottomColor: theme.colors.text_datail,
+        borderBottomColor: theme.colors.text_detail,
         paddingBottom: 10,
         marginBottom: 10,
       }}
