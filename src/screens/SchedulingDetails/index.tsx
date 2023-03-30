@@ -43,9 +43,17 @@ import ForceSvg from "../../assets/force.svg";
 import GasolineSvg from "../../assets/gasoline.svg";
 import ExchangeSvg from "../../assets/exchange.svg";
 import PeopleSvg from "../../assets/people.svg";
+import { useNavigation } from "@react-navigation/native";
 
 export function SchedulingDetails() {
   const theme = useTheme();
+
+  const navigation = useNavigation();
+
+  function handleConfirmRental() {
+    navigation.navigate("SchedulingComplete");
+  }
+
   return (
     <Container>
       <Header>
@@ -117,7 +125,11 @@ export function SchedulingDetails() {
       </Content>
 
       <Footer>
-        <Button title="comfimar" color="green" onPress={() => {}} />
+        <Button
+          title="Alugar agora"
+          color={theme.colors.success}
+          onPress={handleConfirmRental}
+        />
       </Footer>
     </Container>
   );

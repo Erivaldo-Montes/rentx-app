@@ -7,8 +7,11 @@ import { Container, Header, TotalCars, HeaderContent, CarList } from "./styles";
 import Logo from "../../assets/logo.svg";
 
 import { Car } from "../../components/Car";
+import { useNavigation } from "@react-navigation/native";
 
 export function Home() {
+  const navigation = useNavigation();
+
   const car_1 = {
     brand: "AUdi",
     name: "RS 5 coupé",
@@ -19,6 +22,10 @@ export function Home() {
     thumbnail:
       "https://carsguide-res.cloudinary.com/image/upload/f_auto,fl_lossy,q_auto,t_cg_hero_low/v1/editorial/vhs/Audi-RS5-Coupe.png",
   };
+
+  function handleCarDetail() {
+    navigation.navigate("CarDetail");
+  }
 
   return (
     <Container>
@@ -38,7 +45,7 @@ export function Home() {
       <CarList
         data={[1, 2, 3, 4]}
         keyExtractor={(item) => String(item)}
-        renderItem={(props) => <Car data={car_1} />}
+        renderItem={(props) => <Car data={car_1} onPress={handleCarDetail} />}
       />
     </Container>
   );
