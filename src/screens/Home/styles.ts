@@ -1,6 +1,9 @@
 import styled from "styled-components/native";
 import { RFValue } from "react-native-responsive-fontsize";
 import { FlatList } from "react-native";
+import { CarDTO } from "../../dtos/carsDTO";
+import { RectButton } from "react-native-gesture-handler";
+
 export const Container = styled.View`
   flex: 1;
 
@@ -29,9 +32,25 @@ export const TotalCars = styled.Text`
   font-family: ${(props) => props.theme.fonts.primary_400};
 `;
 
-export const CarList = styled(FlatList).attrs({
+export const CarList = styled(FlatList as new () => FlatList<CarDTO>).attrs({
   contentContainerStyle: {
     padding: 24,
   },
   showsVerticalIndicatorScroll: false,
 })``;
+
+export const MyCarsButton = styled(RectButton)`
+  height: 60px;
+  width: 60px;
+
+  border-radius: 30px;
+
+  background-color: ${(props) => props.theme.colors.main};
+
+  justify-content: center;
+  align-items: center;
+
+  position: absolute;
+  bottom: 13px;
+  right: 22px;
+`;
