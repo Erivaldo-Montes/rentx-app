@@ -4,7 +4,7 @@ import { CarDTO } from "../../dtos/carsDTO";
 import { api } from "../../services/api";
 import { StatusBar, FlatList } from "react-native";
 import { BackButton } from "../../components/BackButton";
-import { Load } from "../../components/Load";
+import { LoadAnimation } from "../../components/LoadAnimation";
 import { useNavigation } from "@react-navigation/native";
 import { useTheme } from "styled-components";
 import { Car } from "../../components/Car";
@@ -76,7 +76,7 @@ export function MyCars() {
         <Subtitle>Conforto, segurança e praticidade</Subtitle>
       </Header>
       {loading ? (
-        <Load />
+        <LoadAnimation />
       ) : (
         <Content>
           <Appointments>
