@@ -15,17 +15,6 @@ export const ImageIndexes = styled.View`
   padding-right: 24px;
 `;
 
-export const ImageIndex = styled.View<ImageIndexProps>`
-  width: 6px;
-  height: 6px;
-
-  margin-left: 8px;
-  border-radius: 3px;
-
-  background-color: ${(props) =>
-    props.active ? props.theme.colors.text : props.theme.colors.shape};
-`;
-
 export const CarImageWrapper = styled.View`
   width: ${Dimensions.get("window").width}px;
   height: 132px;

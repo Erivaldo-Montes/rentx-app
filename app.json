@@ -9,6 +9,12 @@
     "splash": {
       "image": "./assets/splash.png",
       "backgroundColor": "#1b1b1f"
+    },
+    "android": {
+      "package": "com.erivaldomontes.rentx"
+    },
+    "ios": {
+      "bundleIdentifier": "com.erivaldomontes.rentx"
     }
   }
 }
