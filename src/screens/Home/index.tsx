@@ -22,7 +22,7 @@ import Animated, {
 import { Button } from "../../components/Button";
 
 const ButtonAnimated = Animated.createAnimatedComponent(RectButton);
-
+import { sync } from "../../services/sync";
 import { Ionicons } from "@expo/vector-icons";
 import { api } from "../../services/api";
 import Logo from "../../assets/logo.svg";
@@ -73,23 +73,23 @@ export function Home() {
     navigation.navigate("CarDetail", { car });
   }
 
-  async function offlineDatabaseSync() {
-    await synchronize({
-      database,
-      pullChanges: async ({ lastPulledAt, migration, schemaVersion }) => {
-        // pega os dados do back end e atualiza o banco local
-        const response = await api.get(
-          `cars/sync/pull?lastPulledVersion=${lastPulledAt || 0}`
-        );
-        const { changes, latestVersion } = response.data;
-        return { changes, timestamp: latestVersion };
-      },
-      pushChanges: async ({ changes, lastPulledAt }) => {
-        const user = changes.users;
-        await api.post(`/users/sync`, user);
-      },
-    });
-  }
+  // async function offlineDatabaseSync() {
+  //   await synchronize({
+  //     database,
+  //     pullChanges: async ({ lastPulledAt, migration, schemaVersion }) => {
+  //       // pega os dados do back end e atualiza o banco local
+  //       const response = await api.get(
+  //         `cars/sync/pull?lastPulledVersion=${lastPulledAt || 0}`
+  //       );
+  //       const { changes, latestVersion } = response.data;
+  //       return { changes, timestamp: latestVersion };
+  //     },
+  //     pushChanges: async ({ changes, lastPulledAt }) => {
+  //       const user = changes.users;
+  //       await api.post(`/users/sync`, user);
+  //     },
+  //   });
+  // }
 
   //
   // function handleMyCars() {
@@ -97,14 +97,14 @@ export function Home() {
   // }
 
   useEffect(() => {
+    sync();
+    console.log("home===");
     let isMounted = true;
     async function fetchCars() {
       try {
-        const carCollection = database.get<CarModel>("cars");
-
-        const cars = await carCollection.query().fetch();
+        const response = await api.get("/cars");
         if (isMounted) {
-          setCars(cars);
+          setCars(response.data);
         }
       } catch (error) {
         console.log(error);
@@ -123,12 +123,12 @@ export function Home() {
     };
   }, []);
 
-  useEffect(() => {
-    console.log("log");
-    if (isConnected === true) {
-      offlineDatabaseSync();
-    }
-  }, [isConnected]);
+  // useEffect(() => {
+  //   console.log("log");
+  //   if (isConnected === true) {
+  //     offlineDatabaseSync();
+  //   }
+  // }, [isConnected]);
 
   return (
     <Container>

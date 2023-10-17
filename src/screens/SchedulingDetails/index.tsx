@@ -41,6 +41,7 @@ import {
   RentalPriceQuota,
   RentalPriceTotal,
 } from "./styles";
+import { useNetInfo } from "@react-native-community/netinfo";
 
 interface Params {
   car: CarDTO;
@@ -61,29 +62,20 @@ export function SchedulingDetails() {
   const route = useRoute();
   const { car, dates } = route.params as Params;
   const navigation = useNavigation();
-
-  const totalRental = Number(dates.length * car.rent.price);
+  const [carUpdated, setCarUpdated] = useState<CarDTO>({} as CarDTO);
+  const netInfo = useNetInfo();
+  const totalRental = Number(dates.length * car.price);
 
   async function handleConfirmRental() {
     setLoading(true);
-    const schedules = await api.get(`/schedulesByCars/${car.id}`);
-
-    const unavailable_dates = [...schedules.data.unavailable_dates, ...dates];
-
-    await api.post(`/schedulesByUser`, {
-      user_id: 3,
-      car,
-      startDate: format(getPlatformDate(new Date(dates[0])), "dd/MM/yyyy"),
-      endDate: format(
-        getPlatformDate(new Date(dates[dates.length - 1])),
-        "dd/MM/yyyy"
-      ),
-    });
 
     await api
-      .put(`/schedulesByCars/${car.id}`, {
-        id: car.id,
-        unavailable_dates,
+      .post(`rentals`, {
+        user_id: 3,
+        car_id: car.id,
+        start_date: new Date(dates[0]),
+        end_date: new Date(dates[dates.length - 1]),
+        total: totalRental,
       })
       .then(() =>
         navigation.navigate("Confirmation", {
@@ -112,6 +104,18 @@ export function SchedulingDetails() {
       ),
     });
   }, []);
+
+  useEffect(() => {
+    async function fetchCarUpdated() {
+      const response = await api.get(`/cars/${car.id}`);
+      setCarUpdated(response.data);
+    }
+
+    if (netInfo.isConnected === true) {
+      fetchCarUpdated();
+    }
+  }, [netInfo.isConnected]);
+
   return (
     <Container>
       <Header>
@@ -119,7 +123,13 @@ export function SchedulingDetails() {
       </Header>
 
       <CarImages>
-        <ImagesSlider imagesUrl={car.photos} />
+        <ImagesSlider
+          imagesUrl={
+            !!carUpdated.photos
+              ? carUpdated.photos
+              : [{ id: car.id, photo: car.thumbnail }]
+          }
+        />
       </CarImages>
 
       <Content>
@@ -130,18 +140,19 @@ export function SchedulingDetails() {
           </Description>
 
           <Rent>
-            <Period>{car.rent.period}</Period>
-            <Price>R$ {car.rent.price}</Price>
+            <Period>{car.period}</Period>
+            <Price>R$ {car.period}</Price>
           </Rent>
         </Details>
         <Accessories>
-          {car.accessories.map((accessory) => (
-            <Accessory
-              key={accessory.type}
-              icon={getAccessoryIcon(accessory.type)}
-              name={accessory.name}
-            />
-          ))}
+          {carUpdated.accessories &&
+            carUpdated.accessories.map((accessory) => (
+              <Accessory
+                icon={getAccessoryIcon(accessory.type)}
+                name={accessory.name}
+                key={accessory.type}
+              />
+            ))}
         </Accessories>
 
         <RentalPeriod>
@@ -172,7 +183,7 @@ export function SchedulingDetails() {
         <RentalPrice>
           <RentalPriceLabel>TOTAL</RentalPriceLabel>
           <RentalPriceDetails>
-            <RentalPriceQuota>{`R$ ${car.rent.price} x${dates.length} diárias`}</RentalPriceQuota>
+            <RentalPriceQuota>{`R$ ${car.price} x${dates.length} diárias`}</RentalPriceQuota>
 
             <RentalPriceTotal>R$ {totalRental}</RentalPriceTotal>
           </RentalPriceDetails>
