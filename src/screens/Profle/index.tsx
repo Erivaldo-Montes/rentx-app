@@ -13,6 +13,7 @@ import { BackButton } from "../../components/BackButton";
 import { Input } from "../../components/Input";
 import { PasswordInput } from "../../components/PasswordInput";
 import { useAuth } from "../../hooks/auth";
+import { useNetInfo } from "@react-native-community/netinfo";
 import { Button } from "../../components/Button";
 import * as yup from "yup";
 import * as ImagePicker from "expo-image-picker";
@@ -33,8 +34,9 @@ import {
 } from "./styles";
 
 export function Profile() {
+  console.log("profile");
   const { user, logOut, updateUser } = useAuth();
-
+  const netInfo = useNetInfo();
   const [option, setOption] = useState<"dataEdit" | "passwordEdit">("dataEdit");
   const [avatar, setAvatar] = useState(user.avatar);
   const [name, setName] = useState(user.name);
@@ -69,6 +71,9 @@ export function Profile() {
   }
 
   function handleOptionChange(optionSelect: "dataEdit" | "passwordEdit") {
+    if (netInfo.isConnected === false && optionSelect === "passwordEdit") {
+      Alert.alert("conecte-se a rede, para mudar a senha");
+    }
     setOption(optionSelect);
   }
 

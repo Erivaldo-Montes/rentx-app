@@ -13,7 +13,8 @@ import LogoSvg from "../../assets/logo.svg";
 
 import { Container } from "./styles";
 
-export function Splash() {
+export function 
+Splash() {
   const navigation = useNavigation();
   const splashAnimation = useSharedValue(0);
 
